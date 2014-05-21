@@ -1,4 +1,4 @@
-Square Root (Verilog HDL 2001)
+Pipelined Floating Multiplier (System Verilog)
 ==========
 
 License
