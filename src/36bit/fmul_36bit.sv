@@ -2,26 +2,26 @@
 
 `default_nettype none
 
-module mul_float(
+module fmul_36bit(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,
 		//Input
 		input wire iDATA_REQ,
 		output wire oDATA_BUSY,
-		input wire [31:0] iDATA_A,
-		input wire [31:0] iDATA_B,
+		input wire [35:0] iDATA_A,
+		input wire [35:0] iDATA_B,
 		//Output
 		output wire oDATA_VALID,
 		input wire iDATA_BUSY,
-		output wire [31:0] oDATA
+		output wire [35:0] oDATA
 	);
 
 	wire cal_2_norm_valid;
 	wire norm_2_cal_busy;
 	wire cal_2_norm_sign;
-	wire [9:0] cal_2_norm_exp;
-	wire [47:0] cal_2_norm_fract;
+	wire [12:0] cal_2_norm_exp;
+	wire [49:0] cal_2_norm_fract;
 	wire cal_2_norm_except_exp_a0;
 	wire cal_2_norm_except_exp_b0;
 	wire cal_2_norm_except_exp_a1;
@@ -32,8 +32,8 @@ module mul_float(
 	wire norm_2_except_valid;
 	wire except_2_norm_busy;
 	wire norm_2_except_sign;
-	wire [9:0] norm_2_except_exp;
-	wire [23:0] norm_2_except_fract;
+	wire [12:0] norm_2_except_exp;
+	wire [48:0] norm_2_except_fract;
 	wire norm_2_except_except_exp_a0;
 	wire norm_2_except_except_exp_b0;
 	wire norm_2_except_except_exp_a1;
@@ -44,7 +44,7 @@ module mul_float(
 	/***************************************
 	Floating Multiplier - 2 Latency
 	***************************************/
-	mul_float_cal FMUL_CALC(
+	fmul_36bit_cal FMUL_CALC(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -70,7 +70,7 @@ module mul_float(
 	/***************************************
 	Normalize & Round - 1 Latency
 	***************************************/
-	mul_float_normalize_round_even FMUL_NOM_ROUND(
+	fmul_36bit_normalize_round_even FMUL_NOM_ROUND(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -103,7 +103,7 @@ module mul_float(
 	/***************************************
 	Exception - 1 Latency
 	***************************************/
-	mul_float_exception  FMUL_EXCEPT(
+	fmul_36bit_exception  FMUL_EXCEPT(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),

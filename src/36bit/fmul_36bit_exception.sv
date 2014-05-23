@@ -2,10 +2,10 @@
 
 `default_nettype none
 
-module mul_float_exception #(
-		parameter P_ZERO = {8'h00, 23'h000000},
-		parameter P_INF = {8'hff, 23'h000000},
-		parameter P_NAN = {8'hff, 23'h400000}
+module fmul_36bit_exception #(
+		parameter P_ZERO = {11'h000, 24'h000000},
+		parameter P_INF = {11'hfff, 24'h000000},
+		parameter P_NAN = {11'hfff, 24'h800000}
 	)(
 		input wire iCLOCK,
 		input wire inRESET,
@@ -14,8 +14,8 @@ module mul_float_exception #(
 		input wire iDATA_VALID,
 		output wire oDATA_BUSY,
 		input wire iDATA_SIGN,
-		input wire [9:0] iDATA_EXP,
-		input wire [23:0] iDATA_FRACT,
+		input wire [12:0] iDATA_EXP,
+		input wire [24:0] iDATA_FRACT,
 		input wire iDATA_EXCEPT_EXP_A0,
 		input wire iDATA_EXCEPT_EXP_B0,
 		input wire iDATA_EXCEPT_EXP_A1,
@@ -25,14 +25,14 @@ module mul_float_exception #(
 		//Output
 		output wire oDATA_VALID,
 		input wire iDATA_BUSY,
-		output wire [31:0] oDATA
+		output wire [35:0] oDATA
 	);
 
 
 	/***************************************
 	Exception Check
 	***************************************/
-	function [31:0] func_make_out;
+	function [35:0] func_make_out;
 		input func_except_exp_a0;
 		input func_except_exp_b0;
 		input func_except_exp_a1;
@@ -40,8 +40,8 @@ module mul_float_exception #(
 		input func_except_flatc_a0;
 		input func_except_flatc_b0;
 		input func_sign;
-		input [7:0] func_exp;
-		input [22:0] func_fract;
+		input [10:0] func_exp;
+		input [23:0] func_fract;
 		begin
 			casex({func_except_exp_a0, func_except_exp_a1, func_except_flatc_a0, func_except_exp_b0, func_except_exp_b1, func_except_flatc_b0})
 				6'b10x_10x : func_make_out = {func_sign, P_ZERO};
@@ -62,24 +62,24 @@ module mul_float_exception #(
 		end
 	endfunction
 
-	reg [7:0] exp;
-	reg [22:0] fract;
+	reg [10:0] exp;
+	reg [23:0] fract;
 	always_comb begin
-		if(iDATA_EXP[9])begin
-			exp = 8'h0;
+		if(iDATA_EXP[12])begin
+			exp = 11'h00;
 			fract = 23'h0;
 		end
-		else if(iDATA_EXP[8])begin
-			exp = 8'hff;
+		else if(iDATA_EXP[11])begin
+			exp = 11'hfff;
 			fract = 23'h0;
 		end
 		else begin
-			exp = iDATA_EXP[7:0];
-			fract = iDATA_FRACT[22:0];
+			exp = iDATA_EXP[10:0];
+			fract = iDATA_FRACT[23:0];
 		end
 	end
 
-	wire [31:0] result_data = func_make_out(
+	wire [35:0] result_data = func_make_out(
 		iDATA_EXCEPT_EXP_A0,
 		iDATA_EXCEPT_EXP_B0,
 		iDATA_EXCEPT_EXP_A1,
@@ -96,16 +96,16 @@ module mul_float_exception #(
 	Output Assignment
 	***************************************/
 	reg b_valid;
-	reg [31:0] b_data;
+	reg [35:0] b_data;
 
 	always_ff@(posedge iCLOCK or negedge inRESET)begin
 		if(!inRESET)begin
 			b_valid <= 1'b0;
-			b_data <= 32'h0;
+			b_data <= 36'h0;
 		end
 		else if(iRESET_SYNC)begin
 			b_valid <= 1'b0;
-			b_data <= 32'h0;
+			b_data <= 36'h0;
 		end
 		else begin
 			if(!iDATA_BUSY)begin

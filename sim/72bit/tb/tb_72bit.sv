@@ -1,7 +1,7 @@
 `default_nettype none
 
 
-module tb_float;
+module tb_72bit;
 
 	parameter P_CYCLE = 20;
 
@@ -10,28 +10,18 @@ module tb_float;
 	reg iRESET_SYNC;
 	reg iDATA_REQ;
 	wire oDATA_BUSY;
-	reg [31:0] iDATA_A;
-	reg [31:0] iDATA_B;
+	reg [71:0] iDATA_A;
+	reg [71:0] iDATA_B;
 	wire oDATA_VALID;
 	reg iDATA_BUSY;
-	wire [31:0] oDATA;
+	wire [71:0] oDATA;
 
 
 
 	/***************************************
 	Expect Gen
 	***************************************/
-	/*
-	wire [31:0] expect_data;
-	mult_anser EXPECT(
-		.fl_o(expect_data),
-		.fl_ia(iDATA_A),
-		.fl_ib(iDATA_B)
-	);
-	*/
-
-
-	fmul_float TARGET(
+	fmul_72bit TARGET(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -51,8 +41,8 @@ module tb_float;
 	end
 
 	task tsk_data_req;
-		input [31:0] tsk_data_a;
-		input [31:0] tsk_data_b;
+		input [71:0] tsk_data_a;
+		input [71:0] tsk_data_b;
 		begin
 			iDATA_REQ = 1'b1;
 			iDATA_A = tsk_data_a;
@@ -70,17 +60,17 @@ module tb_float;
 	/***************************************
 	Request Queue
 	***************************************/
-	reg [31:0] expect_fifo[$];
+	reg [71:0] expect_fifo[$];
 
 	task tsk_fifo_push;
-		input [31:0] tsk_data_write;
+		input [71:0] tsk_data_write;
 		begin
 			expect_fifo.push_front(tsk_data_write);
 		end
 	endtask
 
 	task tsk_fifo_pop;
-		output [31:0] tsk_data_read;
+		output [71:0] tsk_data_read;
 		begin
 			tsk_data_read = expect_fifo.pop_back();
 		end
@@ -95,8 +85,8 @@ module tb_float;
 		inRESET = 1'b0;
 		iRESET_SYNC = 1'h0;
 		iDATA_REQ = 1'h0;
-		iDATA_A = 32'h0;
-		iDATA_B = 32'h0;
+		iDATA_A = 72'h0;
+		iDATA_B = 72'h0;
 		iDATA_BUSY = 1'h0;
 		#(1);
 		inRESET = 1'b1;
@@ -104,10 +94,10 @@ module tb_float;
 		get_counter = 0;
 
 		#(P_CYCLE*5);
-		tsk_data_req(32'h7f800000, 32'h7f800000);	//1, 1
+		tsk_data_req(72'h3ff000000000000000, 72'h3ff000000000000000);	//1, 1
 		//tsk_fifo_push(expect_data);
-		tsk_fifo_push(32'h7f800000);
-
+		tsk_fifo_push(72'h3ff000000000000000);
+/*
 		tsk_data_req(32'h7f800000, 32'h3e200000);	//1, 0.1562
 		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(32'h7f800000);
@@ -127,10 +117,11 @@ module tb_float;
 		tsk_data_req(32'h3e200000, 32'hc2ed4000);	//0.1562, -118.625
 		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(32'hc1944800);
+*/
 	end
 
 	//Assertion
-	reg [31:0] fifo_data_cuur;
+	reg [71:0] fifo_data_cuur;
 	always@(posedge iCLOCK or negedge inRESET)begin
 		if(inRESET && !iRESET_SYNC)begin
 			if(!iDATA_BUSY && oDATA_VALID)begin

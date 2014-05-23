@@ -3,7 +3,7 @@
 
 `default_nettype none
 
-module mul_float_normalize_round_even(
+module fmul_36bit_normalize_round_even(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,
@@ -11,8 +11,8 @@ module mul_float_normalize_round_even(
 		input wire iDATA_VALID,
 		output wire oDATA_BUSY,
 		input wire iDATA_SIGN,
-		input wire [9:0] iDATA_EXP,
-		input wire [47:0] iDATA_FRACT,
+		input wire [12:0] iDATA_EXP,
+		input wire [49:0] iDATA_FRACT,
 		input wire iDATA_EXCEPT_EXP_A0,
 		input wire iDATA_EXCEPT_EXP_B0,
 		input wire iDATA_EXCEPT_EXP_A1,
@@ -23,8 +23,8 @@ module mul_float_normalize_round_even(
 		output wire oDATA_VALID,
 		input wire iDATA_BUSY,
 		output wire oDATA_SIGN,
-		output wire [9:0] oDATA_EXP,
-		output wire [23:0] oDATA_FRACT,
+		output wire [12:0] oDATA_EXP,
+		output wire [48:0] oDATA_FRACT,
 		output wire oDATA_EXCEPT_EXP_A0,
 		output wire oDATA_EXCEPT_EXP_B0,
 		output wire oDATA_EXCEPT_EXP_A1,
@@ -37,22 +37,22 @@ module mul_float_normalize_round_even(
 	Fract
 	***************************************/
 	//Normalize
-	wire [23:0] nom_fract = (iDATA_FRACT[47])? iDATA_FRACT[47:24] : iDATA_FRACT[46:23];
-	wire nom_l = (iDATA_FRACT[47])? iDATA_FRACT[24] : iDATA_FRACT[23];
-	wire nom_g = (iDATA_FRACT[47])? iDATA_FRACT[23] : iDATA_FRACT[22];
-	wire nom_r = (iDATA_FRACT[47])? iDATA_FRACT[22] : |iDATA_FRACT[21:0];
-	wire nom_s = (iDATA_FRACT[47])? |iDATA_FRACT[21:0] : 1'b0;
-	wire nom_fract_all1 = &iDATA_FRACT[46:24];
+	wire [24:0] nom_fract = (iDATA_FRACT[49])? iDATA_FRACT[49:25] : iDATA_FRACT[48:24];
+	wire nom_l = (iDATA_FRACT[49])? iDATA_FRACT[25] : iDATA_FRACT[24];
+	wire nom_g = (iDATA_FRACT[49])? iDATA_FRACT[24] : iDATA_FRACT[23];
+	wire nom_r = (iDATA_FRACT[49])? iDATA_FRACT[23] : |iDATA_FRACT[22:0];
+	wire nom_s = (iDATA_FRACT[49])? |iDATA_FRACT[22:0] : 1'b0;
+	wire nom_fract_all1 = &iDATA_FRACT[49:25];
 
 	//Round
 	wire round_inc_ena = nom_g && (nom_l || nom_r || nom_s);
-	wire [23:0] result_fract = (nom_fract_all1 && round_inc_ena)? nom_fract + 24'h1 : nom_fract;
+	wire [24:0] result_fract = (nom_fract_all1 && round_inc_ena)? nom_fract + 25'h1 : nom_fract;
 
 	/***************************************
 	Exp
 	***************************************/
 	//Normalize_result + Round_result
-	wire [9:0] result_exp = iDATA_EXP + {9'h0, iDATA_FRACT[47]} + {9'h0, round_inc_ena};
+	wire [12:0] result_exp = iDATA_EXP + {12'h0, iDATA_FRACT[49]} + {12'h0, round_inc_ena};
 
 
 	/***************************************
@@ -60,8 +60,8 @@ module mul_float_normalize_round_even(
 	***************************************/
 	reg b_valid;
 	reg b_sign;
-	reg [9:0] b_exp;
-	reg [23:0] b_fract;
+	reg [12:0] b_exp;
+	reg [24:0] b_fract;
 	reg b_except_exp_a0;
 	reg b_except_exp_b0;
 	reg b_except_exp_a1;
@@ -73,8 +73,8 @@ module mul_float_normalize_round_even(
 		if(!inRESET)begin
 			b_valid <= 1'b0;
 			b_sign <= 1'b0;
-			b_exp <= 10'h0;
-			b_fract <= 24'h0;
+			b_exp <= 13'h0;
+			b_fract <= 25'h0;
 			b_except_exp_a0 <= 1'b0;
 			b_except_exp_b0 <= 1'b0;
 			b_except_exp_a1 <= 1'b0;
@@ -85,8 +85,8 @@ module mul_float_normalize_round_even(
 		else if(iRESET_SYNC)begin
 			b_valid <= 1'b0;
 			b_sign <= 1'b0;
-			b_exp <= 10'h0;
-			b_fract <= 24'h0;
+			b_exp <= 13'h0;
+			b_fract <= 25'h0;
 			b_except_exp_a0 <= 1'b0;
 			b_except_exp_b0 <= 1'b0;
 			b_except_exp_a1 <= 1'b0;
