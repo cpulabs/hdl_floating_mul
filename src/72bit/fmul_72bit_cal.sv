@@ -17,7 +17,7 @@ module fmul_72bit_cal(
 		input wire iDATA_BUSY,
 		output wire oDATA_SIGN,
 		output wire [12:0] oDATA_EXP,
-		output wire [119:0] oDATA_FRACT,
+		output wire [121:0] oDATA_FRACT,
 		output wire oDATA_EXCEPT_EXP_A0,
 		output wire oDATA_EXCEPT_EXP_B0,
 		output wire oDATA_EXCEPT_EXP_A1,
@@ -160,10 +160,10 @@ module fmul_72bit_cal(
 	Fraction(2-Latency)
 	***************************************/
 	//Use Primitive
-	wire [119:0] cal0_result_fract = in_data_a_fract * (* multstyle = "dsp" *) in_data_b_fract;		//For Altera
-	//wire [61:0] cal0_result_fract = in_data_a_fract * (* mult_style = "block" *) in_data_b_fract;		//For Xilinx
-	wire [119:0] dff0_result_fract_data;
-	d_latch #(120) FRACT_DFF0(
+	wire [121:0] cal0_result_fract = in_data_a_fract * (* multstyle = "dsp" *) in_data_b_fract;		//For Altera
+	//wire [121:0] cal0_result_fract = in_data_a_fract * (* mult_style = "block" *) in_data_b_fract;		//For Xilinx
+	wire [121:0] dff0_result_fract_data;
+	d_latch #(122) FRACT_DFF0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -174,8 +174,8 @@ module fmul_72bit_cal(
 		.iDATA_BUSY(stage1_busy_condition),
 		.oDATA_DATA(dff0_result_fract_data)
 	);
-	wire [119:0] dff1_result_fract_data;
-	d_latch #(120) FRACT_DFF1(
+	wire [121:0] dff1_result_fract_data;
+	d_latch #(122) FRACT_DFF1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),

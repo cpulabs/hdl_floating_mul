@@ -12,7 +12,7 @@ module fmul_72bit_normalize_round_even(
 		output wire oDATA_BUSY,
 		input wire iDATA_SIGN,
 		input wire [12:0] iDATA_EXP,
-		input wire [119:0] iDATA_FRACT,
+		input wire [121:0] iDATA_FRACT,
 		input wire iDATA_EXCEPT_EXP_A0,
 		input wire iDATA_EXCEPT_EXP_B0,
 		input wire iDATA_EXCEPT_EXP_A1,
@@ -37,12 +37,12 @@ module fmul_72bit_normalize_round_even(
 	Fract
 	***************************************/
 	//Normalize
-	wire [60:0] nom_fract = (iDATA_FRACT[119])? iDATA_FRACT[119:60] : iDATA_FRACT[118:59];
-	wire nom_l = (iDATA_FRACT[119])? iDATA_FRACT[60] : iDATA_FRACT[59];
-	wire nom_g = (iDATA_FRACT[119])? iDATA_FRACT[59] : iDATA_FRACT[58];
-	wire nom_r = (iDATA_FRACT[119])? iDATA_FRACT[58] : |iDATA_FRACT[57:0];
-	wire nom_s = (iDATA_FRACT[119])? |iDATA_FRACT[57:0] : 1'b0;
-	wire nom_fract_all1 = &iDATA_FRACT[119:60];
+	wire [60:0] nom_fract = (iDATA_FRACT[121])? iDATA_FRACT[121:61] : iDATA_FRACT[120:60];
+	wire nom_l = (iDATA_FRACT[121])? iDATA_FRACT[61] : iDATA_FRACT[60];
+	wire nom_g = (iDATA_FRACT[121])? iDATA_FRACT[60] : iDATA_FRACT[59];
+	wire nom_r = (iDATA_FRACT[121])? iDATA_FRACT[59] : |iDATA_FRACT[58:0];
+	wire nom_s = (iDATA_FRACT[121])? |iDATA_FRACT[58:0] : 1'b0;
+	wire nom_fract_all1 = &iDATA_FRACT[121:61];
 
 	//Round
 	wire round_inc_ena = nom_g && (nom_l || nom_r || nom_s);
@@ -52,7 +52,7 @@ module fmul_72bit_normalize_round_even(
 	Exp
 	***************************************/
 	//Normalize_result + Round_result
-	wire [12:0] result_exp = iDATA_EXP + {12'h0, iDATA_FRACT[119]} + {12'h0, round_inc_ena};
+	wire [12:0] result_exp = iDATA_EXP + {12'h0, iDATA_FRACT[121]} + {12'h0, round_inc_ena};
 
 
 	/***************************************

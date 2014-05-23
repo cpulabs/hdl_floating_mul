@@ -21,7 +21,7 @@ module fmul_72bit(
 	wire norm_2_cal_busy;
 	wire cal_2_norm_sign;
 	wire [12:0] cal_2_norm_exp;
-	wire [119:0] cal_2_norm_fract;
+	wire [121:0] cal_2_norm_fract;
 	wire cal_2_norm_except_exp_a0;
 	wire cal_2_norm_except_exp_b0;
 	wire cal_2_norm_except_exp_a1;
