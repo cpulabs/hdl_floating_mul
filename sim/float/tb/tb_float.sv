@@ -16,6 +16,21 @@ module tb_float;
 	reg iDATA_BUSY;
 	wire [31:0] oDATA;
 
+
+
+	/***************************************
+	Expect Gen
+	***************************************/
+	/*
+	wire [31:0] expect_data;
+	mult_anser EXPECT(
+		.fl_o(expect_data),
+		.fl_ia(iDATA_A),
+		.fl_ib(iDATA_B)
+	);
+	*/
+
+
 	mul_float TARGET(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
@@ -89,18 +104,29 @@ module tb_float;
 		get_counter = 0;
 
 		#(P_CYCLE*5);
-		tsk_data_req(32'h82200000, 32'h82200000);	//10, 10
-		tsk_fifo_push(32'd100);
+		tsk_data_req(32'h7f800000, 32'h7f800000);	//1, 1
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'h7f800000);
 
-		tsk_data_req(32'h85480000, 32'h85480000);	//100, 100
-		tsk_fifo_push(32'd10000);
+		tsk_data_req(32'h7f800000, 32'h3e200000);	//1, 0.1562
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'h7f800000);
 
-		tsk_data_req(32'h887a0000, 32'h887a0000);	//1000, 1000
-		tsk_fifo_push(32'd1000000);
+		tsk_data_req(32'h7f800000, 32'hc2ed4000);	//1, -118.625
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'hff800000);
 
-		tsk_data_req(32'h82200000, 32'h887a0000);	//10, 1000
-		tsk_fifo_push(32'd10000);
+		tsk_data_req(32'hc2ed4000, 32'hc2ed4000);	//-118.625, -118.625
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'h465bdf90);
 
+		tsk_data_req(32'h3e200000, 32'h3e200000);	//0.1562, 0.1562
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'h3cc80000);
+
+		tsk_data_req(32'h3e200000, 32'hc2ed4000);	//0.1562, -118.625
+		//tsk_fifo_push(expect_data);
+		tsk_fifo_push(32'hc1944800);
 	end
 
 	//Assertion
@@ -132,7 +158,7 @@ module tb_float;
 	always@(posedge iCLOCK)begin
 		if(get_counter != 0 && get_counter == req_counter)begin
 			$display("Simulation Finish");
-			$nfinish;
+			$finish;
 		end
 	end
 

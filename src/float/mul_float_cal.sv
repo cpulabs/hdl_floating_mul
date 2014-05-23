@@ -73,14 +73,6 @@ module mul_float_cal(
 	/***************************************
 	Wire
 	***************************************/
-	//Input Data
-	wire in_data_a_sign = iDATA_A[31];
-	wire [7:0] in_data_a_exp = iDATA_A[30:23];
-	wire [23:0] in_data_a_fract = {1'b1, iDATA_A[22:0]};
-	wire in_data_b_sign = iDATA_B[31];
-	wire [7:0] in_data_b_exp = iDATA_B[30:23];
-	wire [23:0] in_data_b_fract = {1'b1, iDATA_B[22:0]};
-
 	wire busy_condition;
 	wire enable_request_condition = iDATA_REQ && !busy_condition;
 
@@ -88,6 +80,22 @@ module mul_float_cal(
 	wire stage1_busy_condition;
 	wire stage1_enable_request_condition =  stage1_req_condition && !stage1_busy_condition;
 	wire stage1_out_valid;
+	
+	//Exception
+	wire cal0_result_except_exp_all_zelo_a = (iDATA_A[30:23] == 8'h0);
+	wire cal0_result_except_exp_all_zelo_b = (iDATA_B[30:23] == 8'h0);
+	wire cal0_result_except_exp_all_one_a = (iDATA_A[30:23] == 8'hFF);
+	wire cal0_result_except_exp_all_one_b = (iDATA_B[30:23] == 8'hFF);
+	wire cal0_result_except_fract_all_one_a = (iDATA_A[30:23] != 8'h00);
+	wire cal0_result_except_fract_all_one_b = (iDATA_A[30:23] != 8'h00);
+	
+	//Input Data
+	wire in_data_a_sign = iDATA_A[31];
+	wire [7:0] in_data_a_exp = iDATA_A[30:23];
+	wire [23:0] in_data_a_fract = {!cal0_result_except_exp_all_zelo_a, iDATA_A[22:0]};
+	wire in_data_b_sign = iDATA_B[31];
+	wire [7:0] in_data_b_exp = iDATA_B[30:23];
+	wire [23:0] in_data_b_fract = {!cal0_result_except_exp_all_zelo_b, iDATA_B[22:0]};
 
 	/***************************************
 	Sign(2-Latency) - Pipeline Master
@@ -183,12 +191,6 @@ module mul_float_cal(
 	/***************************************
 	Exception(2-Latency)
 	***************************************/
-	wire cal0_result_except_exp_all_zelo_a = (iDATA_A[30:23] == 8'h0);
-	wire cal0_result_except_exp_all_zelo_b = (iDATA_B[30:23] == 8'h0);
-	wire cal0_result_except_exp_all_one_a = (iDATA_A[30:23] == 8'hFF);
-	wire cal0_result_except_exp_all_one_b = (iDATA_B[30:23] == 8'hFF);
-	wire cal0_result_except_fract_all_one_a = (iDATA_A[30:23] != 8'h00);
-	wire cal0_result_except_fract_all_one_b = (iDATA_A[30:23] != 8'h00);
 	wire [5:0] dff0_result_except_data;
 	d_latch #(6) EXCEPT_DFF0(
 		.iCLOCK(iCLOCK),

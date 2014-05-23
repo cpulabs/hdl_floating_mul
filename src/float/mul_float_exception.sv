@@ -44,20 +44,20 @@ module mul_float_exception #(
 		input [22:0] func_fract;
 		begin
 			casex({func_except_exp_a0, func_except_exp_a1, func_except_flatc_a0, func_except_exp_b0, func_except_exp_b1, func_except_flatc_b0})
-				6'b10x_10x : func_make_out = P_ZERO;
-				6'b10x_011 : func_make_out = P_NAN;
-				6'b10x_010 : func_make_out = P_NAN;
-				6'b10x_00x : func_make_out = P_ZERO;
-				6'b011_10x : func_make_out = P_NAN;
-				6'b011_011 : func_make_out = P_INF;
-				6'b011_010 : func_make_out = P_NAN;
-				6'b011_00x : func_make_out = P_INF;
-				6'b010_xxx : func_make_out = P_NAN;
-				6'b00x_10x : func_make_out = P_ZERO;
-				6'b00x_011 : func_make_out = P_INF;
-				6'b00x_010 : func_make_out = P_NAN;
+				6'b10x_10x : func_make_out = {func_sign, P_ZERO};
+				6'b10x_011 : func_make_out = {func_sign, P_NAN};
+				6'b10x_010 : func_make_out = {func_sign, P_NAN};
+				6'b10x_00x : func_make_out = {func_sign, P_ZERO};
+				6'b011_10x : func_make_out = {func_sign, P_NAN};
+				6'b011_011 : func_make_out = {func_sign, P_INF};
+				6'b011_010 : func_make_out = {func_sign, P_NAN};
+				6'b011_00x : func_make_out = {func_sign, P_INF};
+				6'b010_xxx : func_make_out = {func_sign, P_NAN};
+				6'b00x_10x : func_make_out = {func_sign, P_ZERO};
+				6'b00x_011 : func_make_out = {func_sign, P_INF};
+				6'b00x_010 : func_make_out = {func_sign, P_NAN};
 				6'b00x_00x : func_make_out = {func_sign, func_exp, func_fract};
-				default : func_make_out = P_NAN;
+				default : func_make_out = {func_sign, P_NAN};
 			endcase
 		end
 	endfunction

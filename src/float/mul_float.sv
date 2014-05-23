@@ -33,7 +33,7 @@ module mul_float(
 	wire except_2_norm_busy;
 	wire norm_2_except_sign;
 	wire [9:0] norm_2_except_exp;
-	wire [47:0] norm_2_except_fract;
+	wire [23:0] norm_2_except_fract;
 	wire norm_2_except_except_exp_a0;
 	wire norm_2_except_except_exp_b0;
 	wire norm_2_except_except_exp_a1;
