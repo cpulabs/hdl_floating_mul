@@ -2,7 +2,7 @@
 
 `default_nettype none
 
-module mul_float_cal(
+module mul_float(
 		input wire iCLOCK,
 		input wire inRESET,
 		input wire iRESET_SYNC,
@@ -14,7 +14,7 @@ module mul_float_cal(
 		//Output
 		output wire oDATA_VALID,
 		input wire iDATA_BUSY,
-		output wire oDATA
+		output wire [31:0] oDATA
 	);
 
 	wire cal_2_norm_valid;

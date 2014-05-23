@@ -1,1 +1,9 @@
 /sim/float/work
+
+
+#For modelsim and riviera-pro
+*.wlf
+wlf*
+transcript*
+*.asdb
+*.ucdb

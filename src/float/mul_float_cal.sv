@@ -27,20 +27,10 @@ module mul_float_cal(
 	);
 
 	/***************************************
-	Type
-	***************************************/
-	typedef struct{
-		wire sign;
-		wire [7:0] exp;
-		wire [23:0] fract;
-	} ieee754_float;
-
-
-	/***************************************
 	Sub Module
 	***************************************/
 	module d_latch #(
-			parameter PL_N = 8;
+			parameter PL_N = 8
 		)(
 			input wire iCLOCK,
 			input wire inRESET,
@@ -83,14 +73,13 @@ module mul_float_cal(
 	/***************************************
 	Wire
 	***************************************/
-	ieee754_float in_data_a, in_data_b;
 	//Input Data
-	in_data_a.sign = iDATA_A[31];
-	in_data_a.exp = iDATA_A[30:23];
-	in_data_a.fract = {1'b1, iDATA_A[22:0]};
-	in_data_b.sign = iDATA_B[31];
-	in_data_b.exp = iDATA_B[30:23];
-	in_data_b.fract = {1'b1, iDATA_B[22:0]};
+	wire in_data_a_sign = iDATA_A[31];
+	wire [7:0] in_data_a_exp = iDATA_A[30:23];
+	wire [23:0] in_data_a_fract = {1'b1, iDATA_A[22:0]};
+	wire in_data_b_sign = iDATA_B[31];
+	wire [7:0] in_data_b_exp = iDATA_B[30:23];
+	wire [23:0] in_data_b_fract = {1'b1, iDATA_B[22:0]};
 
 	wire busy_condition;
 	wire enable_request_condition = iDATA_REQ && !busy_condition;
@@ -103,7 +92,7 @@ module mul_float_cal(
 	/***************************************
 	Sign(2-Latency) - Pipeline Master
 	***************************************/
-	wire cal_result_sign = in_data_a.sign ^ in_data_b.sign;
+	wire cal_result_sign = in_data_a_sign ^ in_data_b_sign;
 	wire dff0_result_sign_data;
 	wire dff1_result_sign_data;
 	d_latch #(1) SIGN_DFF0(
@@ -132,7 +121,7 @@ module mul_float_cal(
 	/***************************************
 	Exponents(2-Latency)
 	***************************************/
-	wire [8:0] cal0_result_exp = in_data_a.exp + in_data_b.exp;
+	wire [8:0] cal0_result_exp = in_data_a_exp + in_data_b_exp;
 	wire [8:0] dff0_result_exp_data;
 	wire [9:0] dff1_result_exp_data;
 	d_latch #(9) EXP_DFF0(
@@ -163,8 +152,8 @@ module mul_float_cal(
 	Fraction(2-Latency)
 	***************************************/
 	//Use Primitive
-	wire [47:0] cal0_result_fract = in_data_a.fract * (* multstyle = "dsp" *) in_data_b.fract;		//For Altera
-	//wire [45:0] cal0_result_fract = in_data_a.fract * (* mult_style = "block" *) in_data_b.fract;		//For Xilinx
+	wire [47:0] cal0_result_fract = in_data_a_fract * (* multstyle = "dsp" *) in_data_b_fract;		//For Altera
+	//wire [45:0] cal0_result_fract = in_data_a_fract * (* mult_style = "block" *) in_data_b_fract;		//For Xilinx
 	wire [47:0] dff0_result_fract_data;
 	d_latch #(48) FRACT_DFF0(
 		.iCLOCK(iCLOCK),
@@ -201,7 +190,7 @@ module mul_float_cal(
 	wire cal0_result_except_fract_all_one_a = (iDATA_A[30:23] != 8'h00);
 	wire cal0_result_except_fract_all_one_b = (iDATA_A[30:23] != 8'h00);
 	wire [5:0] dff0_result_except_data;
-	d_latch #(6) FRACT_DFF0(
+	d_latch #(6) EXCEPT_DFF0(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -222,7 +211,7 @@ module mul_float_cal(
 		.oDATA_DATA(dff0_result_except_data)
 	);
 	wire [5:0] dff1_result_except_data;
-	d_latch #(6) FRACT_DFF1(
+	d_latch #(6) EXCEPT_DFF1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -236,6 +225,8 @@ module mul_float_cal(
 	/***************************************
 	Output Assignment
 	***************************************/
+	assign oDATA_BUSY = busy_condition;
+	
 	assign oDATA_VALID = stage1_out_valid;
 	assign oDATA_SIGN = dff1_result_sign_data;
 	assign oDATA_EXP = dff1_result_exp_data;

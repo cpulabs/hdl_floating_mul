@@ -16,7 +16,7 @@ module tb_float;
 	reg iDATA_BUSY;
 	wire [31:0] oDATA;
 
-	mul_float_cal TARGET(
+	mul_float TARGET(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),
 		.iRESET_SYNC(iRESET_SYNC),
@@ -37,7 +37,7 @@ module tb_float;
 
 	task tsk_data_req;
 		input [31:0] tsk_data_a;
-		input [31:0] tsk_data_b;	
+		input [31:0] tsk_data_b;
 		begin
 			iDATA_REQ = 1'b1;
 			iDATA_A = tsk_data_a;
@@ -138,5 +138,5 @@ module tb_float;
 
 endmodule
 
-`default_nettype wire 
+`default_nettype wire
 

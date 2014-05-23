@@ -46,7 +46,7 @@ module mul_float_normalize_round_even(
 
 	//Round
 	wire round_inc_ena = nom_g && (nom_l || nom_r || nom_s);
-	wire result_fract = (nom_fract_all1 && round_inc_ena)? nom_fract + 24'h1 : nom_fract;
+	wire [23:0] result_fract = (nom_fract_all1 && round_inc_ena)? nom_fract + 24'h1 : nom_fract;
 
 	/***************************************
 	Exp

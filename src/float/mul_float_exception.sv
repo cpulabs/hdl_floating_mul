@@ -38,7 +38,7 @@ module mul_float_exception #(
 		input func_except_exp_a1;
 		input func_except_exp_b1;
 		input func_except_flatc_a0;
-		input func_except_flatc_a1;
+		input func_except_flatc_b0;
 		input func_sign;
 		input [7:0] func_exp;
 		input [22:0] func_fract;
@@ -65,7 +65,7 @@ module mul_float_exception #(
 	reg [7:0] exp;
 	reg [22:0] fract;
 	always_comb begin
-		if(iDATA_EXP[[9])begin
+		if(iDATA_EXP[9])begin
 			exp = 8'h0;
 			fract = 23'h0;
 		end
@@ -110,14 +110,14 @@ module mul_float_exception #(
 		else begin
 			if(!iDATA_BUSY)begin
 				b_valid <= iDATA_VALID;
-				b_data <= iDATA_DATA;
+				b_data <= result_data;
 			end
 		end
 	end
 
 	assign oDATA_BUSY = iDATA_BUSY;
 	assign oDATA_VALID = b_valid;
-	assign oDATA_DATA = b_data;
+	assign oDATA = b_data;
 
 endmodule
 
