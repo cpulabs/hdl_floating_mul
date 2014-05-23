@@ -33,7 +33,7 @@ module fmul_36bit(
 	wire except_2_norm_busy;
 	wire norm_2_except_sign;
 	wire [12:0] norm_2_except_exp;
-	wire [48:0] norm_2_except_fract;
+	wire [24:0] norm_2_except_fract;
 	wire norm_2_except_except_exp_a0;
 	wire norm_2_except_except_exp_b0;
 	wire norm_2_except_except_exp_a1;

@@ -95,8 +95,24 @@ module tb_72bit;
 
 		#(P_CYCLE*5);
 		tsk_data_req(72'h3ff000000000000000, 72'h3ff000000000000000);	//1, 1
-		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(72'h3ff000000000000000);
+
+		tsk_data_req(72'h3ff000000000000000, 72'h400000000000000000);	//1, 2
+		tsk_fifo_push(72'h400000000000000000);
+
+		tsk_data_req(72'h3ff000000000000000, 72'h3fe000000000000000);	//1, 0.5
+		tsk_fifo_push(72'h3fe000000000000000);
+
+		tsk_data_req(72'h3ff000000000000000, 72'h3fe800000000000000);	//1, 0.75
+		tsk_fifo_push(72'h3fe800000000000000);
+
+		tsk_data_req(72'h3fe000000000000000, 72'h400000000000000000);	//0.5, 2
+		tsk_fifo_push(72'h3ff000000000000000);
+
+
+
+
+
 /*
 		tsk_data_req(32'h7f800000, 32'h3e200000);	//1, 0.1562
 		//tsk_fifo_push(expect_data);

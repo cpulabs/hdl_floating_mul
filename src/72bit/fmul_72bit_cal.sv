@@ -143,7 +143,7 @@ module fmul_72bit_cal(
 		.iDATA_BUSY(stage1_busy_condition),
 		.oDATA_DATA(dff0_result_exp_data)
 	);
-	wire [12:0] cal1_result_exp = {1'b0, dff0_result_exp_data} - 10'd511;
+	wire [12:0] cal1_result_exp = {1'b0, dff0_result_exp_data} - 10'd1023;
 	d_latch #(13) EXP_DFF1(
 		.iCLOCK(iCLOCK),
 		.inRESET(inRESET),

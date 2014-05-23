@@ -24,7 +24,7 @@ module fmul_36bit_normalize_round_even(
 		input wire iDATA_BUSY,
 		output wire oDATA_SIGN,
 		output wire [12:0] oDATA_EXP,
-		output wire [48:0] oDATA_FRACT,
+		output wire [24:0] oDATA_FRACT,
 		output wire oDATA_EXCEPT_EXP_A0,
 		output wire oDATA_EXCEPT_EXP_B0,
 		output wire oDATA_EXCEPT_EXP_A1,

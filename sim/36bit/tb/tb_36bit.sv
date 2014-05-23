@@ -96,13 +96,22 @@ module tb_36bit;
 		#(P_CYCLE*5);
 		
 		tsk_data_req(36'h3ff000000, 36'h3ff000000);	//1, 1
-		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(36'h3ff000000);
-		/*
-		tsk_data_req(32'h7f800000, 32'h3e200000);	//1, 0.1562
-		//tsk_fifo_push(expect_data);
-		tsk_fifo_push(32'h7f800000);
+		
+		tsk_data_req(36'h3ff000000, 36'h400000000);	//1, 2
+		tsk_fifo_push(36'h400000000);
 
+		tsk_data_req(36'h3ff000000, 36'h3fe000000);	//1, 0.5
+		tsk_fifo_push(36'h3fe000000);
+
+		tsk_data_req(36'h3ff000000, 36'h3fe800000);	//1, 0.75
+		tsk_fifo_push(36'h3fe800000);
+
+		tsk_data_req(36'h3fe000000, 36'h400000000);	//0.5, 2
+		tsk_fifo_push(36'h3ff000000);
+
+
+/*
 		tsk_data_req(32'h7f800000, 32'hc2ed4000);	//1, -118.625
 		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(32'hff800000);
@@ -118,7 +127,7 @@ module tb_36bit;
 		tsk_data_req(32'h3e200000, 32'hc2ed4000);	//0.1562, -118.625
 		//tsk_fifo_push(expect_data);
 		tsk_fifo_push(32'hc1944800);
-		*/
+*/
 	end
 
 	//Assertion
